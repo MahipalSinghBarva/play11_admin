@@ -10,4 +10,6 @@ body {
   background-color: black;
 }
 
-
+/* .nav-container {
+  clip-path: polygon(0 0, 100% 0%, 100% 100%, 49% 100%, 30% 61%);
+} */
