@@ -28,9 +28,14 @@ const Contest = () => {
         <h2 className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white ">
           Contest List
         </h2>
-        {/* <Link to="/contest">
-          <Button>Back</Button>
-        </Link> */}
+        <div className="flex gap-2">
+          <Link to="/contest/create">
+            <Button>+ Contest</Button>
+          </Link>
+          <Link to="/contest">
+            <Button>Back</Button>
+          </Link>
+        </div>
       </div>
       <div className="overflow-x-auto mt-2">
         <Table hoverable>

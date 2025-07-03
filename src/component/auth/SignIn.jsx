@@ -70,11 +70,11 @@ const SignIn = () => {
 
   return (
     <div className="flex justify-center items-center h-screen ">
-      <Card className="w-2/4 h-3/5">
+      <Card className="w-2/4 h-3/4">
         <div className="flex flex-col  gap-4">
           <h1 className="text-white text-center font-bold text-4xl">Play11</h1>
-          <h1 className="text-white  font-bold text-xl">
-            Sign In to continue...
+          <h1 className="text-white text-center font-bold text-xl">
+            Admin Portal
           </h1>
         </div>
         <form className="flex flex-col gap-4" onSubmit={loginHandler}>
