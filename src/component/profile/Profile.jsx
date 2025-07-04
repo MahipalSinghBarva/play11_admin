@@ -1,15 +1,61 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Label, TextInput } from "flowbite-react";
-import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
 import { X } from "lucide-react";
+import { clearAllUserErrors, passwordReset, sendOTP, verifyOTP } from "../../store/slice/userSlice";
+import { toast } from "react-toastify";
 
 const Profile = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const { user } = useSelector((state) => state.user);
+  const [isOtpPopup, setIsOtpPopupOpen] = useState(false);
+  const { user, success, message, error } = useSelector((state) => state.user);
+  const [userForm, setUserForm] = useState({
+    otp: "",
+    phone: user.phone,
+    name: user.name,
+    password: "",
+    confirmPassword: ""
+  })
+  const { otp, phone, password, confirmPassword } = userForm;
 
   const popupOpenHandler = () => setIsPopupOpen(true);
   const popupCloseHandler = () => setIsPopupOpen(false);
+
+  const otpPopupOpenHandler = () => setIsOtpPopupOpen(true);
+  const otpPopupCloseHandler = () => setIsOtpPopupOpen(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setUserForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // const otpSendHandler = (e) => {
+  //   e.preventDefault();
+  //   dispatch(sendOTP({ phone: userForm.phone, name: userForm.name }));
+  // };
+
+  // const otpVerifyHandler = (e) => {
+  //   e.preventDefault();
+  //   dispatch(verifyOTP({ phone: userForm.phone, otp: userForm.otp }));
+  // };
+
+  const resetPasswordHandler = (e) => {
+    e.preventDefault();
+    dispatch(passwordReset(userForm));
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast.error(error.message || error);
+      dispatch(clearAllUserErrors());
+    }
+    if (success) {
+      navigate("/signin");
+    }
+  }, [success, navigate, error]);
 
   return (
     <div>
@@ -70,9 +116,9 @@ const Profile = () => {
 
       {/* Password Popup Modal */}
       {isPopupOpen && (
-        <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 flex items-center justify-center">
+        <div className="fixed top-0 left-0 w-full h-full bg-black/80 blur-1 bg-opacity-50 z-50 flex items-center justify-center">
           <div className="bg-white dark:bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-xl relative">
-           
+
             <button
               onClick={popupCloseHandler}
               className="absolute top-3 right-3 text-gray-400 hover:text-red-500"
@@ -85,12 +131,43 @@ const Profile = () => {
             </h3>
 
             <div className="flex flex-col gap-4">
+              {/* <div>
+                <Label htmlFor="password">Phone Nubmer</Label>
+                <TextInput
+                  id="phone"
+                  type="number"
+                  name="phone"
+                  value={user.phone}
+                  disabled
+                />
+              </div> */}
+              {/* <div className="flex justify-end ">
+                <Label htmlFor="otp" className="text-blue-600" onClick={
+                  otpPopupOpenHandler} >Send Otp</Label>
+              </div>
+              {isOtpPopup && (
+                <div>
+                  <Label htmlFor="otp">OTP</Label>
+                  <TextInput
+                    id="otp"
+                    type="number"
+                    value={userForm.otp}
+                    required
+                    name="otp"
+                    onChange={handleChange}
+                  />
+                </div>
+              )} */}
               <div>
                 <Label htmlFor="password">New Password</Label>
                 <TextInput
                   id="password"
                   type="password"
                   placeholder="Enter new password"
+                  required
+                  name="password"
+                  value={userForm.password}
+                  onChange={handleChange}
                 />
               </div>
               <div>
@@ -99,16 +176,21 @@ const Profile = () => {
                   id="confirm-password"
                   type="password"
                   placeholder="Confirm password"
+                  required
+                  name="confirmPassword"
+                  value={userForm.confirmPassword}
+                  onChange={handleChange}
                 />
               </div>
-              <Button className="mt-4 w-full" type="submit">
+              <Button className="mt-4 w-full" type="submit" onClick={resetPasswordHandler}>
                 Submit
               </Button>
             </div>
           </div>
         </div>
-      )}
-    </div>
+      )
+      }
+    </div >
   );
 };
 

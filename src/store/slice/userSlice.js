@@ -92,6 +92,18 @@ const userSlice = createSlice({
       state.message = action.payload;
     },
 
+    resetState() {
+      return {
+        loading: false,
+        user: {},
+        allUser: [],
+        singleUser: {},
+        isAuthenticated: false,
+        error: null,
+        message: null,
+      }
+    },
+
     clearAllErrors(state, action) {
       state.error = null;
       state.success = null;
@@ -112,6 +124,67 @@ export const login = (userData) => async (dispatch) => {
   } catch (error) {
     dispatch(
       userSlice.actions.loginFail(
+        error.response?.data?.message || "Something went wrong"
+      )
+    );
+  }
+};
+
+export const logout = () => async (dispatch) => {
+  try {
+    localStorage.removeItem("persist:root",);
+    localStorage.removeItem("token");
+    dispatch(userSlice.actions.resetState())
+  } catch (error) {
+    console.error("Logout failed", error)
+  }
+};
+
+export const sendOTP = (userForm) => async (dispatch) => {
+  dispatch(userSlice.actions.userActionRequest());
+  try {
+    const { data } = await axios.post(
+      `${baseURL}/api/v1/user/send-otp`,
+      userForm
+    );
+    dispatch(userSlice.actions.userActionSuccess());
+  } catch (error) {
+    dispatch(
+      userSlice.actions.userActionFail(
+        error.response?.data?.message || "Something went wrong"
+      )
+    );
+  }
+};
+
+export const verifyOTP = (userForm) => async (dispatch) => {
+  dispatch(userSlice.actions.userActionRequest());
+  try {
+    const { data } = await axios.post(
+      `${baseURL}/api/v1/user/verify-otp`,
+      userForm
+    );
+    dispatch(userSlice.actions.userActionSuccess());
+  } catch (error) {
+    dispatch(
+      userSlice.actions.userActionFail(
+        error.response?.data?.message || "Something went wrong"
+      )
+    );
+  }
+};
+
+export const passwordReset = (userForm) => async (dispatch) => {
+  dispatch(userSlice.actions.userActionRequest());
+  try {
+    const { data } = await axios.put(
+      `${baseURL}/api/v1/admin/password-reset`,
+      userForm
+    );
+    dispatch(userSlice.actions.userActionSuccess());
+  } catch (error) {
+    dispatch(
+      userSlice.actions.userActionFail(
         error.response?.data?.message || "Something went wrong"
       )
     );

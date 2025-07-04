@@ -20,6 +20,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { FileInput } from "flowbite-react";
+import { logout } from "../../store/slice/userSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -83,21 +84,17 @@ const Sidebar = () => {
       path: "/withdrow-request",
       icon: <Wallet size={20} color="#00b3ff" strokeWidth={2.5} />,
     },
-    {
-      name: "Profile",
-      path: "/profile",
-      icon: <UserPen size={20} color="#00b3ff" strokeWidth={2.5} />,
-    },
+   
   ];
 
   const handleItemClick = (path) => {
     setSelectedItem(path);
   };
 
-  // const handleLogout = () => {
-  //   dispatch(logout());
-  //   navigate("/signin");
-  // };
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/signin");
+  };
   return (
     <div>
       <button
@@ -137,18 +134,16 @@ const Sidebar = () => {
               <li
                 key={item.path}
                 onClick={() => handleItemClick(item.path)}
-                className={`${
-                  selectedItem === item.path
-                    ? "bg-gray-700 text-white"
-                    : "text-gray-500 "
-                }   cursor-pointer transition-all duration-100 rounded-lg flex items-center px-2`}
+                className={`${selectedItem === item.path
+                  ? "bg-gray-700 text-white"
+                  : "text-gray-500 "
+                  }   cursor-pointer transition-all duration-100 rounded-lg flex items-center px-2`}
               >
                 <span> {item.icon}</span>
                 <Link
                   to={item.path}
-                  class={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white  group ${
-                    selectedItem === item.path ? "text-white" : "text-gray-900"
-                  }`}
+                  class={`flex items-center p-2 text-gray-900 rounded-lg dark:text-white  group ${selectedItem === item.path ? "text-white" : "text-gray-900"
+                    }`}
                 >
                   <span class="">{item.name}</span>
                 </Link>
@@ -166,11 +161,10 @@ const Sidebar = () => {
             <span class="ms-3">Profile</span>
           </Link>
           <Link
-            to={"/profile"}
             class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-900 group text-white"
           >
             <LogOut size={20} color="#00b3ff" strokeWidth={2.5} />
-            <span class="ms-3">Sign Out</span>
+            <span class="ms-3" onClick={handleLogout}>Sign Out</span>
           </Link>
         </div>
       </aside>
